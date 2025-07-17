@@ -1,4 +1,4 @@
- #!/bin/bash -e
+#!/bin/bash -e
 
 sudo apt update -y && sudo apt-get install file -y
 #pip3 install --upgrade requests
