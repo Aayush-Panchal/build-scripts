@@ -42,9 +42,9 @@ jobs:
         - source variable.sh
         # creating a folder package-cache to store the variable.sh and cloned package folder
         - mkdir package-cache && sudo mv variable.sh package-cache
-        #- chmod +x ./script/build_package.sh; bash ./script/build_package.sh;
+        - chmod +x ./script/build_package.sh; bash ./script/build_package.sh;
         # setting a variable cloned_package,the value of the variable is based on recently cloned package through build-script execution.
-        #- cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
+        - cloned_package=$(ls -td -- */ | head -n 1) && sudo mv "$cloned_package" package-cache
         - echo "export CLONED_PACKAGE=\"$cloned_package\"" >> package-cache/variable.sh
         - cd package-cache
         # changing the ownership of package-cache and it's sub directories to travis, the reason for doing that is to facilitate creation of files
@@ -56,7 +56,7 @@ jobs:
         - echo $TRAVIS_BUILD_DIR
         - cd $TRAVIS_BUILD_DIR
         - gzip $TRAVIS_BUILD_DIR/build_log
-        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
+        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh build_log.gz
       workspaces:
         create:
           # package_cache contains both variable.sh file as well as cloned package directory.
@@ -75,7 +75,7 @@ jobs:
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - sudo chmod a+r *.whl
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_39
@@ -93,7 +93,7 @@ jobs:
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - sudo chmod a+r *.whl
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_310
@@ -110,7 +110,7 @@ jobs:
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - sudo chmod a+r *.whl
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_311
@@ -126,7 +126,7 @@ jobs:
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - sudo chmod a+r *.whl
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_312
@@ -143,7 +143,7 @@ jobs:
         - chmod +x ./script/build_wheels.sh; bash ./script/build_wheels.sh;
         - sudo chmod a+r *.whl
         - WHEEL_FILE=*.whl
-        #- chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
+        - chmod +x ./script/upload-scripts/upload_wheel.sh; bash ./script/upload-scripts/upload_wheel.sh $WHEEL_FILE
       workspaces:
         create:
           name: wheels_cache_313
@@ -215,7 +215,7 @@ jobs:
         - find source_syft -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - find source_grype -mindepth 1 -exec mv -t source {} + 2>/dev/null || true
         - tar cvzf source_scanner.tar.gz source
-        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
+        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh source_scanner.tar.gz
 
     - stage: Build docker image
       # the below condition checks if docker_build flag set to true or false, it it is true it will build this stage and if it is false it will exclude this stage.
@@ -225,7 +225,7 @@ jobs:
         - source variable.sh;
         - chmod +x ./script/build_docker.sh; bash ./script/build_docker.sh;echo "printing docker images"; docker images;
         # the below command is used to upload docker image to ibm icr registry.
-        #- chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
+        - chmod +x ./script/upload-scripts/upload_docker_image.sh; bash ./script/upload-scripts/upload_docker_image.sh;
       workspaces:
         create:
           name: docker_image_tar
@@ -293,4 +293,4 @@ jobs:
         - find image_syft -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - find image_grype -mindepth 1 -exec mv -t image {} + 2>/dev/null || true
         - tar cvzf image_scanner.tar.gz image
-        #- chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
+        - chmod +x ./script/upload-scripts/upload_file.sh; bash ./script/upload-scripts/upload_file.sh image_scanner.tar.gz
