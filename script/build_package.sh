@@ -35,14 +35,7 @@ elif [[ "$TESTED_ON" == "UBI:9.3" || "$TESTED_ON" == "UBI9.3" ]]; then
     if [[ "$NON_ROOT_BUILD" == "true" ]]; then
         docker_build_non_root "registry.access.redhat.com/ubi9/ubi:9.3"
     fi
-else
-    docker pull registry.access.redhat.com/ubi8/ubi:8.7
-    docker_image="registry.access.redhat.com/ubi8/ubi:8.7"
-    if [[ "$NON_ROOT_BUILD" == "true" ]];
-    then
-        docker_build_non_root "registry.access.redhat.com/ubi8/ubi:8.7"
-    fi  
-fi
+
 
 python3 script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" > build_log &
 
