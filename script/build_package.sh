@@ -28,7 +28,7 @@ then
     then
         docker_build_non_root "registry.access.redhat.com/ubi9/ubi:$ubi_version"
     fi
-
+fi
 
 
 python3 script/validate_builds_currency.py "$PKG_DIR_PATH$BUILD_SCRIPT" "$VERSION" "$docker_image" > build_log &
