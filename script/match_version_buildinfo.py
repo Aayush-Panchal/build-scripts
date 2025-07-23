@@ -1,21 +1,27 @@
 import json
 import os
 import re
+
 version = str(os.environ['VERSION'])
-match_version=""
-f = open('build_info.json')
-data = json.load(f)
-for key,value in data.items():
-  subKeys = [subKey.strip() for subKey in key.split(',')]
-  if version in subKeys:
-    match_version = key
-    break
-  else:
+match_version = ""
+
+# Load JSON
+with open('build_info.json') as f:
+    data = json.load(f)
+
+# Search for matching version key
+for key, value in data.items():
+    subKeys = [subKey.strip() for subKey in key.split(',')]
     for subKey in subKeys:
-      regex_str = '^' + subKey.replace(".", "\\.").replace("*", ".*") + '$'
-      regex = re.compile(regex_str)
-      if regex.match(version):
-        match_version = key
-  if len(match_version) != 0:
-    break
+        if subKey == version:
+            match_version = key
+            break
+        # Convert wildcard to regex pattern
+        regex_str = '^' + re.escape(subKey).replace("\\*", ".*") + '$'
+        if re.fullmatch(regex_str, version):
+            match_version = key
+            break
+    if match_version:
+        break
+
 print(match_version)
