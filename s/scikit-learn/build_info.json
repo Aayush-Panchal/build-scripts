@@ -5,7 +5,7 @@
    "version": "1.6.1",
    "wheel_build" : true,
    "default_branch": "main",
-   "build_script": "scikit-learn_ubi_9.3.sh",
+   "build_script": "scikit-learn_1.7.0_ubi_9.3.sh",
    "package_dir": "s/scikit-learn",
    "docker_build": false,
    "validate_build_script": true,
