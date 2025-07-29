@@ -1,67 +1,81 @@
 import os
 import stat
-import requests
 import sys
-import subprocess
 import docker
-import json
-        
+
 def trigger_script_validation_checks(file_name, version, image_name):
-    # Spawn a container and pass the build script
-    client = docker.DockerClient(base_url='unix://var/run/docker.sock')
-    st = os.stat(file_name)
-    current_dir = os.getcwd()
-    os.chmod("{}/{}".format(current_dir, file_name), st.st_mode | stat.S_IEXEC)
+    print("Inside trigger_script_validation_checks")
 
-    print(current_dir)
-    print(file_name)
-    package = file_name.split("/")[1]
-    print(package)
+    # Show all inputs clearly
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Received file_name: '{file_name}'")
+    print(f"Received version: '{version}'")
+    print(f"Received image_name (raw): '{image_name}'")
 
-    # Ensure image_name has a valid tag or digest
+    # Sanitize the image name (add :latest if no tag is given)
     if ":" not in image_name and "@" not in image_name:
-        image_name += ":latest"
+        image_name = image_name.strip() + ":latest"
+    else:
+        image_name = image_name.strip()
 
-    print(f"Using Docker image: {image_name}")
+    print(f"Sanitized image_name: '{image_name}'")
 
-    container = None
-    result = None
+    current_dir = os.getcwd()
+    file_path = os.path.join(current_dir, file_name)
+
+    try:
+        # Ensure script is executable
+        st = os.stat(file_path)
+        os.chmod(file_path, st.st_mode | stat.S_IEXEC)
+    except Exception as e:
+        print(f"Failed to set execute permission on {file_path}: {e}")
+        raise
+
     try:
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{file_name} {version} "
+            f"cd /home/tester/ && ./{file_name} {version}"
         ]
+        print(f"Final Docker command: {command}")
 
+        client = docker.DockerClient(base_url='unix://var/run/docker.sock')
         container = client.containers.run(
-            image_name,
-            command,
+            image=image_name,
+            command=command,
             network='host',
             detach=True,
             volumes={
                 current_dir: {'bind': '/home/tester/', 'mode': 'rw'}
             },
-            stderr=True,
+            stderr=True
         )
         result = container.wait()
     except Exception as e:
         print(f"Failed to create/run container: {e}")
-        return  # Exit early to avoid using uninitialized container
+        raise
 
     try:
-        if container:
-            print(container.logs().decode("utf-8"))
+        print(container.logs().decode("utf-8"))
     except Exception:
-        print(container.logs() if container else "No logs available")
+        print(container.logs())
 
-    if container:
-        container.remove()
+    container.remove()
 
-    if result and int(result["StatusCode"]) != 0:
-        raise Exception(f"Build script validation failed for {file_name} !")
+    if int(result["StatusCode"]) != 0:
+        raise Exception(f"Build script validation failed for {file_name}!")
     else:
         return True
 
 if __name__ == "__main__":
     print("Inside python program")
-    trigger_script_validation_checks(sys.argv[1], sys.argv[2], sys.argv[3])
+
+    if len(sys.argv) != 4:
+        print("Usage: python3 validate_builds_currency.py <script_path> <version> <image_name>")
+        sys.exit(1)
+
+    file_name = sys.argv[1]
+    version = sys.argv[2]
+    image_name = sys.argv[3]
+
+    trigger_script_validation_checks(file_name, version, image_name)
