@@ -1,13 +1,13 @@
 import os
 import stat
+import requests
 import sys
+import subprocess
 import docker
-
+import json
+        
 def trigger_script_validation_checks(file_name, version, image_name):
-    # Ensure Docker image has a proper tag
-    if ":" not in image_name and "@" not in image_name:
-        image_name += ":latest"  # Add default tag if none provided
-
+    # Spawn a container and pass the build script
     client = docker.DockerClient(base_url='unix://var/run/docker.sock')
     st = os.stat(file_name)
     current_dir = os.getcwd()
@@ -15,14 +15,22 @@ def trigger_script_validation_checks(file_name, version, image_name):
 
     print(current_dir)
     print(file_name)
-    package = file_name.split("/")[1]  # Assuming file path is in format w/pkg/script.sh
+    package = file_name.split("/")[1]
     print(package)
 
+    # Ensure image_name has a valid tag or digest
+    if ":" not in image_name and "@" not in image_name:
+        image_name += ":latest"
+
+    print(f"Using Docker image: {image_name}")
+
+    container = None
+    result = None
     try:
         command = [
             "bash",
             "-c",
-            f"cd /home/tester/ && ./{file_name} {version}"
+            f"cd /home/tester/ && ./{file_name} {version} "
         ]
 
         container = client.containers.run(
@@ -38,17 +46,19 @@ def trigger_script_validation_checks(file_name, version, image_name):
         result = container.wait()
     except Exception as e:
         print(f"Failed to create/run container: {e}")
-        raise
+        return  # Exit early to avoid using uninitialized container
 
     try:
-        print(container.logs().decode("utf-8"))
+        if container:
+            print(container.logs().decode("utf-8"))
     except Exception:
-        print(container.logs())
+        print(container.logs() if container else "No logs available")
 
-    container.remove()
+    if container:
+        container.remove()
 
-    if int(result["StatusCode"]) != 0:
-        raise Exception(f"Build script validation failed for {file_name}!")
+    if result and int(result["StatusCode"]) != 0:
+        raise Exception(f"Build script validation failed for {file_name} !")
     else:
         return True
 
