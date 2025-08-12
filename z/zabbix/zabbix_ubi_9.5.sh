@@ -26,7 +26,8 @@ OUTPUT_DIR="/home/tester/output"
 
 # Update system and enable EPEL
 dnf update -y --allowerasing
-dnf install -y --allowerasing https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+# dnf install -y --allowerasing https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+dnf install -y --allowerasing --nobest epel-release
 dnf install -y --allowerasing dnf-plugins-core
 
 # Install essential tools first
