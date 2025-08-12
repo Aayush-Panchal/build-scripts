@@ -11,4 +11,7 @@
   "6.*.*": {
     "dir": "6.2.3-ubi8"
   }
+  "7.*.*": {
+    "build_script": "zabbix_ubi_9.5.sh"
+  }
 }
