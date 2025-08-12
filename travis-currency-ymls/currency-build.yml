@@ -6,7 +6,7 @@ language: shell
 
 branches:
   only:
-    - master
+    - regex-test1
 
 env:
   global:
