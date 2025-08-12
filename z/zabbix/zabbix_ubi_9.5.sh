@@ -27,7 +27,13 @@ OUTPUT_DIR="/home/tester/output"
 # Update system and enable EPEL
 dnf update -y --allowerasing
 # dnf install -y --allowerasing https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-dnf install -y --allowerasing --nobest epel-release
+OS_VER=$(rpm -E %{rhel} 2>/dev/null || echo "")
+if [ -n "$OS_VER" ]; then
+    dnf install -y --allowerasing --nobest \
+        "https://dl.fedoraproject.org/pub/epel/epel-release-latest-${OS_VER}.noarch.rpm"
+else
+    echo "Skipping EPEL install — not a RHEL-like system."
+fi
 dnf install -y --allowerasing dnf-plugins-core
 
 # Install essential tools first
