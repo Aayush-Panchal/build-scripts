@@ -26,6 +26,12 @@ before_install:
     - sudo apt clean
     - sudo apt update -y
     - sudo apt install -y jq; jq --version
+      # --- Fix: Install correct EPEL for OS version ---
+    - if command -v yum >/dev/null 2>&1; then
+        osver=$(rpm -E %{rhel});
+        echo "Detected RHEL/UBI major version: $osver";
+        sudo yum install -y "https://dl.fedoraproject.org/pub/epel/epel-release-latest-${osver}.noarch.rpm";
+      fi
    
 
 jobs:
