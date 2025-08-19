@@ -21,11 +21,15 @@ def trigger_script_validation_checks(file_name, version, image_name):
     print(f"[INFO] Package: {package}")
 
     # --- Fix: ensure valid docker reference (repo:tag) ---
-    if " " in image_name:  
+    if " " in image_name:
         parts = image_name.split()
         if len(parts) == 2:
             image_name = f"{parts[0]}:{parts[1]}"
             print(f"[FIX] Corrected image name to: {image_name}")
+
+    # --- Hard validation for docker image format ---
+    if ":" not in image_name or image_name.endswith(":"):
+        raise ValueError(f"Invalid Docker image name: '{image_name}'. Expected format 'repo:tag'.")
 
     container = None
     result = {"StatusCode": 1}
