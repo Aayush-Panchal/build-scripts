@@ -6,7 +6,7 @@
     "package_dir": "w/Wildfly-operator",
     "default_branch": "main",
     "build_script": "wildfly_operator_ubi_9.sh",
-    "docker_build": "false",
+    "docker_build": "true",
     "use_non_root_user": false,
     "validate_build_script": "true",
     "0.5.6": {
