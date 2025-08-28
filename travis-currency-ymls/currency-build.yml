@@ -6,7 +6,7 @@ language: shell
 
 branches:
   only:
-    - master
+    - elastic
 
 env:
   global:
