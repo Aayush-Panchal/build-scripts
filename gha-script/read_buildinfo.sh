@@ -30,6 +30,7 @@ if [ -f $config_file ]; then
   if $(jq 'has("use_non_root_user")' $jsonObj); then    
     nonRootBuild=$(jq .use_non_root_user $jsonObj)
   fi
+
   
   #default build_docker=true
   build_docker=true
@@ -58,6 +59,12 @@ if [ -f $config_file ]; then
 
     if [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $config_file) != null ]]; then
       basename=$(jq -r --arg ver "$match_version" '.[$ver].base_docker_image' $config_file)
+
+      # ✅ Added section: Force all ubi9.* to use ubi9/ubi:9.6
+      if [[ "$basename" == *"ubi9"* ]]; then
+        echo "Detected UBI9 base → Overriding to registry.access.redhat.com/ubi9/ubi:9.6"
+        basename="registry.access.redhat.com/ubi9/ubi:9.6"
+      fi
     fi
   
     if [[ $(jq -r --arg ver "$match_version" '.[$ver].base_docker_variant' $config_file) != null ]]; then
