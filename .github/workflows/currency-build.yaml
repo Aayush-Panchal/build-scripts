@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - replica-master
+      - download_artifacts
 
 jobs:
 
