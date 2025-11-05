@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - replica-master
+      - download_artifacts
     inputs:
       package_name:
         description: 'Name of the package to build'
@@ -325,6 +326,8 @@ jobs:
             echo "------------------------------------------------------------------"
             
       - name: Downloading Wheels
+        env: 
+            GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: | 
             source package-cache/variable.sh
             source package-cache/scanner-env.sh
