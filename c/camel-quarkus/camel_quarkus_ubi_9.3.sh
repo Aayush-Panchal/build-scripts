@@ -45,11 +45,13 @@ git checkout $PACKAGE_VERSION
 #export MAVEN_OPTS="-Xmx2048m -Xms1024m  -Djava.awt.headless=true"
 #export MAVEN_PARAMS="-B -e -fae -V -Dnoassembly -Dmaven.compiler.fork=true -Dsurefire.rerunFailingTestsCount=2 -Dfailsafe.rerunFailingTestsCount=1"
 if ! mvn clean install -Dquickly; then
+    
     echo "------------------$PACKAGE_NAME:build fails---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Fail|  Build_fails"
     exit 1
 else
+    mvn dependency:resolve
     echo "------------------$PACKAGE_NAME:build success---------------------------------------"
     echo "$PACKAGE_URL $PACKAGE_NAME"
     echo "$PACKAGE_NAME  |  $PACKAGE_URL | $PACKAGE_VERSION | $OS_NAME | GitHub  | Pass|  Build_success"
