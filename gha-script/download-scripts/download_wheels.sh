@@ -2,7 +2,7 @@
 
 validate_build_script=$VALIDATE_BUILD_SCRIPT
 cloned_package=$CLONED_PACKAGE
-mkdir -p wheels
+mkdir -p package-cache/wheels
 token_request=$(curl -X POST https://iam.cloud.ibm.com/identity/token \
   -H "content-type: application/x-www-form-urlencoded" \
   -H "accept: application/json" \
@@ -18,7 +18,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     while read wheel; do
       echo "Downloading wheel: $wheel"
       curl -s -H "Authorization: bearer $token" \
-        -o "wheels/$(basename $wheel)" \
+        -o "package-cache/wheels/$(basename "$wheel")" \
         "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production/$wheel"
     done < wheels_list.txt
 
