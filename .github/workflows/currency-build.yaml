@@ -309,11 +309,7 @@ jobs:
           name: package-cache-consolidated
           path: package-cache
 
-      - name: List wheels in package-cache
-        run: |
-          echo "Verifying contents of package-cache/wheels/"
-          ls -lh package-cache/wheels
-          echo "Done listing all wheels."
+      
 
       - name: Run ScanCode Toolkit on Wheels
         run: |
