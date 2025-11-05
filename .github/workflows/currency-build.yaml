@@ -323,6 +323,17 @@ jobs:
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
             ls package-cache/wheels
             echo "------------------------------------------------------------------"
+            
+      - name: Downloading Wheels
+        run: | 
+            source package-cache/variable.sh
+            source package-cache/scanner-env.sh
+            chmod +x ./gha-script/download-scripts/download_wheels
+            bash ./gha-script/download-scripts/download_wheels
+            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
+            ls package-cache/wheels
+            echo "------------------------------------------------------------------"
+         
 
       - name: Collect wheel scan outputs
         run: |
