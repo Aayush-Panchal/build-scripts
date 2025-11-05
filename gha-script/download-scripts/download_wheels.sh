@@ -23,6 +23,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     done < wheels_list.txt
 
     echo "All wheels downloaded successfully."
+    ls package-cache/wheels
 else
     echo "Error: Token request failed. Response: $token_request"
     exit 1
