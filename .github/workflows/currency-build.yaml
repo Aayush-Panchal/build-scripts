@@ -328,8 +328,8 @@ jobs:
         run: | 
             source package-cache/variable.sh
             source package-cache/scanner-env.sh
-            chmod +x ./gha-script/download-scripts/download_wheels
-            bash ./gha-script/download-scripts/download_wheels
+            chmod +x ./gha-script/download-scripts/download_wheels.sh
+            bash ./gha-script/download-scripts/download_wheels.sh
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
             ls package-cache/wheels
             echo "------------------------------------------------------------------"
