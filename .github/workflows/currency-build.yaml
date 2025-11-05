@@ -1,5 +1,4 @@
 name: Currency Build
-
 on:
   workflow_dispatch:
     branches:
@@ -227,21 +226,6 @@ jobs:
         continue-on-error: ${{ matrix.allow-failure }}
 
 
-      - name: Move wheel into package-cache
-        run: |
-          mkdir -p package-cache/wheels
-          # Ensure permissions are correct
-          sudo chown -R $USER:$USER .
-          chmod -R u+rw .
-          find . -name "*.whl" -exec cp {} package-cache/wheels/ \;
-          echo "Wheels moved to package-cache/wheels"
-          echo "========= ls package-cache ========="
-          ls package-cache
-          echo "+++++++++++++++++++++++++++++++++++"
-          ls package-cache/wheels
-          echo "==================================" 
-          ls -lh package-cache/wheels
-
        
 
       - name: Upload wheel package-cache
@@ -260,66 +244,17 @@ jobs:
         continue-on-error: ${{ matrix.allow-failure }}
 
 
-  collect_wheels:
-    name: Collect All Wheels
-    needs: wheel_build
-    runs-on: ubuntu-24.04-ppc64le-p10
-    steps:
-      - name: Download all wheel artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: all-wheels
-
-      - name: Download package-cache from previous step
-        uses: actions/download-artifact@v4
-        with:
-          name: package-cache
-          path: package-cache
-
-      
-      - name: Move only main package wheels into package-cache/wheels
-        run: |
-          chmod +x package-cache/variable.sh
-          chmod +x package-cache/scanner-env.sh
-          source package-cache/variable.sh
-          source package-cache/scanner-env.sh
-          mkdir -p package-cache/wheels
-          echo "Copying wheels starting with package name: $PACKAGE_NAME"
-          PACKAGE_NAME_LC=$(echo "$PACKAGE_NAME" | tr '[:upper:]' '[:lower:]')
-          find all-wheels -type f -name "${PACKAGE_NAME_LC}*.whl" -exec cp {} package-cache/wheels/ \;
-
-          echo "Final wheel contents for package: $PACKAGE_NAME"
-          ls -lh package-cache/wheels
-
-      - name: Upload consolidated package-cache
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-cache-consolidated
-          path: package-cache
+  
 
   wheel_scanner:
-    needs: collect_wheels
     runs-on: ubuntu-24.04-ppc64le-p10
     steps:
       - uses: actions/checkout@v4
-
       - name: Download consolidated package-cache
         uses: actions/download-artifact@v4
         with:
           name: package-cache-consolidated
           path: package-cache
-
-      
-
-      - name: Run ScanCode Toolkit on Wheels
-        run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
-            chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
-            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
-            echo "------------------------------------------------------------------"
             
       - name: Downloading Wheels
         env: 
@@ -329,6 +264,16 @@ jobs:
             source package-cache/scanner-env.sh
             chmod +x ./gha-script/download-scripts/download_wheels.sh
             bash ./gha-script/download-scripts/download_wheels.sh
+            echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
+            ls package-cache/wheels
+            echo "------------------------------------------------------------------"
+
+      - name: Run ScanCode Toolkit on Wheels
+        run: |
+            source package-cache/variable.sh
+            source package-cache/scanner-env.sh
+            chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
+            bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
             ls package-cache/wheels
             echo "------------------------------------------------------------------"
