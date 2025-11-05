@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+validate_build_script=$VALIDATE_BUILD_SCRIPT
+cloned_package=$CLONED_PACKAGE
 mkdir -p wheels
 token_request=$(curl -X POST https://iam.cloud.ibm.com/identity/token \
   -H "content-type: application/x-www-form-urlencoded" \
