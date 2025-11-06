@@ -268,11 +268,6 @@ jobs:
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
             ls wheels
             echo "------------------------------------------------------------------"
-
-      - name: Run ScanCode Toolkit on Wheels
-        run: |
-            source package-cache/variable.sh
-            source package-cache/scanner-env.sh
             chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
             bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
