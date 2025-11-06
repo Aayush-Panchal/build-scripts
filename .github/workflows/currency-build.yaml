@@ -257,7 +257,7 @@ jobs:
           name: package-cache
           path: package-cache
             
-      - name: Downloading Wheels
+      - name: Downloading Wheels and Running Scancode Scanner
         env: 
             GHA_CURRENCY_SERVICE_ID_API_KEY: ${{ secrets.GHA_CURRENCY_SERVICE_ID_API_KEY }}
         run: | 
