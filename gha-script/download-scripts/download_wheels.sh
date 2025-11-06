@@ -21,15 +21,13 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
  
     # If none found, dump available keys for debugging
     if [[ ! -s wheels_list.txt ]]; then
-        echo "❌ No .whl files found in COS for prefix: $PACKAGE_NAME/$VERSION/"
-        echo "Dumping available keys under prefix $PACKAGE_NAME/ for debugging:"
+    
         curl -s -H "Authorization: bearer $token" \
           "$bucket_url?list-type=2&prefix=$PACKAGE_NAME/" \
           | grep -oP '(?<=<Key>)[^<]*' || true
         exit 1
     fi
  
-    echo "✅ Found the following wheels:"
     cat wheels_list.txt
     echo "---------------------------------------------------------"
  
@@ -41,7 +39,6 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     done < wheels_list.txt
  
     echo "---------------------------------------------------------"
-    echo "✅ All wheels downloaded successfully."
     ls -lh package-cache/wheels
     echo "---------------------------------------------------------"
  
