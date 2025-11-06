@@ -11,10 +11,10 @@ token_request=$(curl -s -X POST https://iam.cloud.ibm.com/identity/token \
  
 if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
-    bucket_url="https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-stag"
+    bucket_url="https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production"
  
     echo "Fetching wheel list from COS..."
-    echo "🔍 Checking prefix: $PACKAGE_NAME/$VERSION/"
+    echo "Checking prefix: $PACKAGE_NAME/$VERSION/"
     curl -s -H "Authorization: bearer $token" \
       "$bucket_url?list-type=2&prefix=$PACKAGE_NAME/$VERSION/" \
       | grep -oP '(?<=<Key>)[^<]*\.whl' > wheels_list.txt
@@ -32,7 +32,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     echo "---------------------------------------------------------"
  
     while read -r wheel; do
-      echo "⬇️  Downloading wheel: $wheel"
+      echo "Downloading wheel: $wheel"
       curl -s -H "Authorization: bearer $token" \
         -o "package-cache/wheels/$(basename "$wheel")" \
         "$bucket_url/$wheel"
