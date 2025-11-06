@@ -278,8 +278,8 @@ jobs:
       - name: Collect wheel scan outputs
         run: |
           mkdir -p wheel_scancode
-          echo "Looking for *_output.json files in wheels/"
-          find wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
+          echo "Looking for *_output.json files in package-cache/wheels/"
+          find package-cache/wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
 
           echo "Contents to be zipped:"
           ls -lh wheel_scancode
