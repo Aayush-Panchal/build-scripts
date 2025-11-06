@@ -15,16 +15,34 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
       "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production?list-type=2&prefix=$PACKAGE_NAME/$VERSION/" \
       | grep -oP '(?<=<Key>)[^<]*\.whl' > wheels_list.txt
 
-    while read wheel; do
+    # 🟩 Added: check if any wheels found
+    if [[ ! -s wheels_list.txt ]]; then
+        echo "❌ No .whl files found in COS for prefix: $PACKAGE_NAME/$VERSION/"
+        echo "Dumping available keys under prefix $PACKAGE_NAME/ for debugging:"
+        curl -s -H "Authorization: bearer $token" \
+          "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production?list-type=2&prefix=$PACKAGE_NAME/" \
+          | grep -oP '(?<=<Key>)[^<]*' || true
+        exit 1
+    fi
+
+    # 🟩 Added: show found wheels
+    echo "✅ Found the following wheels:"
+    cat wheels_list.txt
+    echo "---------------------------------------------------------"
+
+    while read -r wheel; do
       echo "Downloading wheel: $wheel"
       curl -s -H "Authorization: bearer $token" \
         -o "package-cache/wheels/$(basename "$wheel")" \
         "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production/$wheel"
     done < wheels_list.txt
 
+    echo "---------------------------------------------------------"
     echo "All wheels downloaded successfully."
-    ls package-cache/wheels
+    ls -lh package-cache/wheels || echo "⚠️ No wheel files found!"
+    echo "---------------------------------------------------------"
 else
     echo "Error: Token request failed. Response: $token_request"
     exit 1
 fi
+
