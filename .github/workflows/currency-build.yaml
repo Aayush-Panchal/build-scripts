@@ -266,7 +266,7 @@ jobs:
             chmod +x ./gha-script/download-scripts/download_wheels.sh
             bash ./gha-script/download-scripts/download_wheels.sh
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
+            ls wheels
             echo "------------------------------------------------------------------"
 
       - name: Run ScanCode Toolkit on Wheels
@@ -276,15 +276,15 @@ jobs:
             chmod +x ./gha-script/scanner-scripts/scancode_wheel_scan.sh
             bash ./gha-script/scanner-scripts/scancode_wheel_scan.sh
             echo "-------------------------Wheels inside package-cache/wheels-----------------------------------------"
-            ls package-cache/wheels
+            ls wheels
             echo "------------------------------------------------------------------"
          
 
       - name: Collect wheel scan outputs
         run: |
           mkdir -p wheel_scancode
-          echo "Looking for *_output.json files in package-cache/wheels/"
-          find package-cache/wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
+          echo "Looking for *_output.json files in wheels/"
+          find wheels -type f -name "*_output.json" -exec mv {} wheel_scancode/ \;
 
           echo "Contents to be zipped:"
           ls -lh wheel_scancode
