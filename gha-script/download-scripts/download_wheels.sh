@@ -12,7 +12,7 @@ if [[ $(echo "$token_request" | jq -r '.errorCode') == "null" ]]; then
     token=$(echo "$token_request" | jq -r '.access_token')
     echo "Fetching wheel list from COS..."
     curl -s -H "Authorization: bearer $token" \
-      "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production?prefix=$PACKAGE_NAME/$VERSION/" \
+      "https://s3.us.cloud-object-storage.appdomain.cloud/ose-power-artifacts-production?list-type=2&prefix=$PACKAGE_NAME/$VERSION/" \
       | grep -oP '(?<=<Key>)[^<]*\.whl' > wheels_list.txt
 
     while read wheel; do
