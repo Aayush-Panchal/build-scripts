@@ -41,12 +41,12 @@ for wheel in *.whl; do
   base_name="${wheel%.whl}"  # Strip .whl extension
   extract_dir="${base_name}_extract"
   output_json="${base_name}_output.json"
-
+  
 
   echo "base name : $base_name"
   echo "extract_dir : $extract_dir"
   echo "output_json : $output_json"
- 
+  
 
   # Unzip the wheel
   unzip -q "$wheel" -d "$extract_dir"
@@ -57,6 +57,8 @@ for wheel in *.whl; do
   # Run scancode
   echo "------------------------------------------------------------"
    ../../scancode-toolkit/venv/bin/scancode --license --package --json-pp "$output_json" "$extract_dir"
+   echo "Showing first 40 lines of output:"
+   head -40 "$output_json"
 
   # Zip the result
   echo "------------------------- output files ---------------------"
