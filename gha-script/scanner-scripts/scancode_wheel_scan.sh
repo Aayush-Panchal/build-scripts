@@ -57,8 +57,11 @@ for wheel in *.whl; do
   # Run scancode
   echo "------------------------------------------------------------"
    ../../scancode-toolkit/venv/bin/scancode --license --package --json-pp "$output_json" "$extract_dir"
-  echo "Showing first 40 lines of output:"
-  head -40 "$output_json"
+  echo "====================[ OUTPUT JSON FILE PATH ]===================="
+  echo "$(realpath "$output_json")"
+
+  echo "====================[ FULL CONTENT OF OUTPUT.JSON ]===================="
+  cat "$output_json"
 
   # Zip the result
   echo "------------------------- output files ---------------------"
