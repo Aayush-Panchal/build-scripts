@@ -14,6 +14,7 @@ HOME = os.getcwd()
 package_data = {}
 use_non_root = ""
 image_name = "registry.access.redhat.com/ubi9/ubi:9.6"
+SKIP_LICENSE_DIRS = ["gha-script", "process_bom"]
 
 def trigger_basic_validation_checks(file_name):
     key_checks = {
@@ -26,6 +27,12 @@ def trigger_basic_validation_checks(file_name):
         "# Travis-Check": "travis_check"
     }
     matched_keys = []
+
+    for skip_dir in SKIP_LICENSE_DIRS:
+        if file_name.startswith(skip_dir):
+            print(f"Skipping license check for: {file_name}")
+            return True
+    
     # Check if apache license file exists
     file_parts = file_name.split('/')
     licence_file = "{}/{}/LICENSE".format(HOME, "/".join(file_parts[:-1]))
